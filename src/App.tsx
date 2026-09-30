@@ -3,6 +3,7 @@ import { chunkFile, parseDiff, type DiffFile } from './lib/diff'
 import { buildMessages, parseFindings, reviewableLines, severityLabel, toMarkdown, type Finding } from './lib/review'
 import { MODELS, type Backend, type FromWorker, type ModelId } from './lib/protocol'
 import { SAMPLE_DIFF } from './lib/sample'
+import { Icon, type IconName } from './icons'
 
 type ModelState =
   | { kind: 'idle' }
@@ -150,18 +151,20 @@ export default function App() {
   }
 
   return (
+    <>
+    <AppHeader resultCount={Object.keys(results).length ? total : null} />
     <div className="app">
       <header className="hero">
-        <p className="eyebrow">Local AI · Code review</p>
+        <p className="eyebrow"><Icon name="shield" /> Local AI · Code review</p>
         <h1>로컬 AI 코드리뷰</h1>
         <p>변경 사항(git diff)을 브라우저 안의 코드 모델이 검토합니다. <strong>코드는 이 기기 밖으로 나가지 않습니다.</strong></p>
       </header>
 
       <main className="layout">
-        <section className="panel">
-          <h2>1. 변경 사항</h2>
+        <section className="panel" id="diff">
+          <h2><Icon name="diff" />1. 변경 사항</h2>
           <div className="howto">
-            <span>터미널에서 복사:</span>
+            <span className="howto-lead"><Icon name="terminal" />터미널에서 복사:</span>
             <code>git diff | clip</code><span className="muted">Windows</span>
             <code>git diff | pbcopy</code><span className="muted">macOS</span>
             <code>git diff main...HEAD</code><span className="muted">브랜치 전체</span>
@@ -176,11 +179,11 @@ export default function App() {
           />
           <div className="row">
             <label className="button secondary">
-              .diff / .patch 열기
+              <Icon name="upload" />.diff / .patch 열기
               <input type="file" accept=".diff,.patch,.txt,text/plain" onChange={(e) => { openFile(e.target.files?.[0]); e.target.value = '' }} />
             </label>
-            <button className="secondary" type="button" onClick={() => { setInput(SAMPLE_DIFF); setResults({}) }}>예제 diff 넣기</button>
-            {input && <button className="ghost" type="button" onClick={() => { setInput(''); setResults({}) }}>지우기</button>}
+            <button className="secondary" type="button" onClick={() => { setInput(SAMPLE_DIFF); setResults({}) }}><Icon name="spark" />예제 diff 넣기</button>
+            {input && <button className="ghost" type="button" onClick={() => { setInput(''); setResults({}) }}><Icon name="x" />지우기</button>}
           </div>
           {files.length > 0 && (
             <ul className="files">
@@ -202,8 +205,8 @@ export default function App() {
           )}
         </section>
 
-        <section className="panel">
-          <h2>2. 모델</h2>
+        <section className="panel" id="model">
+          <h2><Icon name="cpu" />2. 모델</h2>
           <div className="model on">
             <strong>{MODELS[model].name}</strong>
             <span className="muted">{MODELS[model].size} · 코드 전용 모델 (Apache-2.0)</span>
@@ -218,21 +221,21 @@ export default function App() {
             {storage && storage.used > 0 && <> <button className="link" type="button" onClick={deleteModels}>저장한 모델 지우기</button></>}
           </p>
 
-          <h2>3. 리뷰</h2>
+          <h2 id="review"><Icon name="play" />3. 리뷰</h2>
           <div className="row">
             <button type="button" onClick={runReview} disabled={modelState.kind !== 'ready' || running || !targets.length}>
-              {running ? '리뷰 중…' : `리뷰 시작 (${targets.length}개 파일)`}
+              <Icon name="play" />{running ? '리뷰 중…' : `리뷰 시작 (${targets.length}개 파일)`}
             </button>
-            {running && <button className="secondary" type="button" onClick={stop}>중단</button>}
-            {!running && total > 0 && <button className="secondary" type="button" onClick={copyMarkdown}>{copied ? '복사했습니다' : '마크다운 복사'}</button>}
+            {running && <button className="secondary" type="button" onClick={stop}><Icon name="stop" />중단</button>}
+            {!running && total > 0 && <button className="secondary" type="button" onClick={copyMarkdown}><Icon name={copied ? 'check' : 'copy'} />{copied ? '복사했습니다' : '마크다운 복사'}</button>}
           </div>
           {modelState.kind !== 'ready' && <p className="muted small">먼저 모델을 준비하세요.</p>}
           {running && live && <pre className="live" aria-live="polite">{live}</pre>}
         </section>
 
         {Object.keys(results).length > 0 && (
-          <section className="panel results">
-            <h2>결과 · {total}건</h2>
+          <section className="panel results" id="results">
+            <h2><Icon name="list" />결과 · {total}건</h2>
             {Object.entries(results).map(([path, r]) => (
               <FileCard key={path} path={path} result={r} file={files.find((f) => f.path === path)} />
             ))}
@@ -244,17 +247,17 @@ export default function App() {
       {/* 모바일: 지금 할 다음 동작 하나를 화면 아래에 고정한다(긴 한 줄 화면에서 버튼을 찾으러 스크롤하지 않게). */}
       <div className="mobile-actions" role="region" aria-label="빠른 실행">
         {running ? (
-          <button type="button" className="secondary" onClick={stop}>중단</button>
+          <button type="button" className="secondary" onClick={stop}><Icon name="stop" />중단</button>
         ) : modelState.kind === 'ready' ? (
-          <button type="button" onClick={runReview} disabled={!targets.length}>{targets.length ? `리뷰 시작 (${targets.length}개 파일)` : '변경 사항을 먼저 넣으세요'}</button>
+          <button type="button" onClick={runReview} disabled={!targets.length}><Icon name="play" />{targets.length ? `리뷰 시작 (${targets.length}개 파일)` : '변경 사항을 먼저 넣으세요'}</button>
         ) : modelState.kind === 'loading' ? (
           <button type="button" disabled>모델 준비 중…</button>
         ) : (
-          <button type="button" onClick={prepareModel}>모델 준비 (약 1.3GB)</button>
+          <button type="button" onClick={prepareModel}><Icon name="download" />모델 준비 (약 1.3GB)</button>
         )}
         {Object.keys(results).length > 0 && (
           <button type="button" className="secondary" onClick={() => document.querySelector('.results')?.scrollIntoView({ behavior: 'smooth' })}>
-            결과 {total}건
+            <Icon name="list" />결과 {total}건
           </button>
         )}
       </div>
@@ -264,6 +267,7 @@ export default function App() {
         <a href="https://github.com/currentJob/local-code-review" target="_blank" rel="noreferrer">소스</a>
       </footer>
     </div>
+    </>
   )
 }
 
@@ -280,7 +284,7 @@ function ModelStatus({ state, onPrepare }: { state: ModelState; onPrepare: () =>
   }
   return (
     <div className="row">
-      <button type="button" onClick={onPrepare}>모델 준비</button>
+      <button type="button" onClick={onPrepare}><Icon name="download" />모델 준비</button>
       {state.kind === 'error' && <span className="status bad">불러오지 못했습니다: {state.message}</span>}
     </div>
   )
@@ -290,7 +294,7 @@ function FileCard({ path, result, file }: { path: string; result: FileResult; fi
   const label = { waiting: '대기', running: result.parts > 1 ? `검토 중 ${result.part}/${result.parts}` : '검토 중', done: '완료', stopped: '중단됨', error: '오류' }[result.status]
   return (
     <article className="filecard">
-      <header><span className="path">{path}</span><span className={`badge ${result.status}`}>{label}</span></header>
+      <header><span className="path"><Icon name="diff" /> {path}</span><span className={`badge ${result.status}`}>{label}</span></header>
       {result.status === 'done' && !result.findings.length && <p className="muted">지적 사항 없음</p>}
       <ul className="findings">
         {result.findings.map((f, i) => (
@@ -322,4 +326,52 @@ function Snippet({ file, line }: { file: DiffFile; line: number }) {
     )
   }
   return null
+}
+
+const SECTIONS: [string, string, IconName][] = [['diff', '변경 사항', 'diff'], ['model', '모델', 'cpu'], ['review', '리뷰', 'play'], ['results', '결과', 'list']]
+
+/** 상단 헤더: 로고·워드마크, 구역 이동(보고 있는 구역에 밑줄), 소스 링크. 모바일에서는 아이콘만 보인다. */
+function AppHeader({ resultCount }: { resultCount: number | null }) {
+  const [active, setActive] = useState('diff')
+  const pinnedUntil = useRef(0)  // 메뉴를 누른 직후에는 누른 구역을 그대로 보여 준다(부드러운 스크롤 중 흔들림 방지)
+  useEffect(() => {
+    // 헤더 아래 기준선(120px)을 이미 지난 구역 중 마지막 것. 두 열로 나란히 놓여도 위치로 판단하므로 흔들리지 않는다.
+    const update = () => {
+      if (Date.now() < pinnedUntil.current) return
+      let current = SECTIONS[0][0]
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
+      for (const [id] of SECTIONS) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        const top = el.getBoundingClientRect().top
+        // 페이지가 짧아 뒤쪽 구역이 기준선까지 올라오지 못하면, 끝에 닿았을 때 보이는 마지막 구역을 고른다.
+        if (top <= 120 || (atBottom && top < window.innerHeight - 40)) current = id
+      }
+      setActive(current)
+    }
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update) }
+  }, [])
+  return (
+    <header className="cj-header">
+      <a className="cj-brand" href="#top" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
+        <span className="cj-brand-mark"><Icon name="logo" className="" /></span><span>Code Review</span>
+      </a>
+      <nav className="cj-nav" aria-label="구역">
+        {SECTIONS.filter(([id]) => id !== 'results' || resultCount != null).map(([id, label, icon]) => (
+          <a key={id} href={`#${id}`} aria-current={active === id ? 'true' : undefined} aria-label={label}
+            onClick={(e) => { e.preventDefault(); setActive(id); pinnedUntil.current = Date.now() + 900; document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}>
+            <Icon name={icon} /><span className="cj-label">{label}{id === 'results' && resultCount != null ? ` ${resultCount}` : ''}</span>
+          </a>
+        ))}
+      </nav>
+      <div className="cj-header-actions">
+        <a className="cj-pill" href="https://github.com/currentJob/local-code-review" target="_blank" rel="noreferrer" aria-label="소스 코드 (GitHub)">
+          <Icon name="github" /><span className="cj-label">소스</span>
+        </a>
+      </div>
+    </header>
+  )
 }

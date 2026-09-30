@@ -11,7 +11,7 @@ a { color: var(--cj-accent); }
 code, pre, textarea, .path, .line, .snippet { font-family: var(--cj-mono); font-variant-ligatures: none; }
 :focus-visible { outline: 3px solid #dc8458; outline-offset: 2px; }
 
-.app { max-width: 1180px; margin: 0 auto; padding: 44px 28px 48px; }
+.app { max-width: 1180px; margin: 0 auto; padding: 40px 28px 48px; }
 .eyebrow { margin: 0 0 14px; color: var(--cj-accent); font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
 .hero h1 { margin: 0 0 12px; font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.15; letter-spacing: -.045em; }
 .hero p { margin: 0; max-width: 640px; color: var(--cj-muted); }
@@ -20,7 +20,12 @@ code, pre, textarea, .path, .line, .snippet { font-family: var(--cj-mono); font-
 .layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; margin-top: 32px; align-items: start; }
 .results { grid-column: 1 / -1; }
 .panel { background: var(--cj-surface); border: 1px solid var(--cj-line); border-radius: 12px; padding: 24px; }
-.panel h2 { font-size: 19px; letter-spacing: -.02em; margin: 0 0 14px; }
+.panel h2 { display: flex; align-items: center; gap: 8px; font-size: 19px; letter-spacing: -.02em; margin: 0 0 14px; scroll-margin-top: 80px; }
+.panel h2 .cj-ic { width: 20px; height: 20px; color: var(--cj-accent); }
+.panel { scroll-margin-top: 80px; }
+button .cj-ic, .button .cj-ic { width: 17px; height: 17px; margin-right: 7px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 6px; } .eyebrow .cj-ic { width: 14px; height: 14px; }
+.howto-lead { display: inline-flex; align-items: center; gap: 5px; } .howto-lead .cj-ic { width: 15px; height: 15px; }
 .panel h2:not(:first-child) { margin-top: 28px; }
 
 .howto { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 13px; margin-bottom: 10px; color: var(--cj-muted); }
@@ -97,3 +102,4 @@ details pre { white-space: pre-wrap; color: var(--cj-muted); }
   textarea { min-height: 200px; }
   .panel { padding: 18px; }
 }
+.filecard .path .cj-ic { width: 16px; height: 16px; vertical-align: -3px; color: var(--cj-accent); }
