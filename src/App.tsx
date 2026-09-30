@@ -152,6 +152,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="hero">
+        <p className="eyebrow">Local AI · Code review</p>
         <h1>로컬 AI 코드리뷰</h1>
         <p>변경 사항(git diff)을 브라우저 안의 코드 모델이 검토합니다. <strong>코드는 이 기기 밖으로 나가지 않습니다.</strong></p>
       </header>
@@ -241,7 +242,7 @@ export default function App() {
       </main>
 
       <footer className="foot">
-        처리는 모두 이 브라우저에서 합니다 · 모델: Qwen2.5-Coder (Apache-2.0) · 실행: transformers.js / ONNX Runtime Web ·{' '}
+        <b>로컬 AI 코드리뷰</b> · 처리는 모두 이 브라우저에서 합니다 · 모델: Qwen2.5-Coder (Apache-2.0) · 실행: transformers.js / ONNX Runtime Web ·{' '}
         <a href="https://github.com/currentJob/local-code-review" target="_blank" rel="noreferrer">소스</a>
       </footer>
     </div>
