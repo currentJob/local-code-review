@@ -241,6 +241,24 @@ export default function App() {
         )}
       </main>
 
+      {/* 모바일: 지금 할 다음 동작 하나를 화면 아래에 고정한다(긴 한 줄 화면에서 버튼을 찾으러 스크롤하지 않게). */}
+      <div className="mobile-actions" role="region" aria-label="빠른 실행">
+        {running ? (
+          <button type="button" className="secondary" onClick={stop}>중단</button>
+        ) : modelState.kind === 'ready' ? (
+          <button type="button" onClick={runReview} disabled={!targets.length}>{targets.length ? `리뷰 시작 (${targets.length}개 파일)` : '변경 사항을 먼저 넣으세요'}</button>
+        ) : modelState.kind === 'loading' ? (
+          <button type="button" disabled>모델 준비 중…</button>
+        ) : (
+          <button type="button" onClick={prepareModel}>모델 준비 (약 1.3GB)</button>
+        )}
+        {Object.keys(results).length > 0 && (
+          <button type="button" className="secondary" onClick={() => document.querySelector('.results')?.scrollIntoView({ behavior: 'smooth' })}>
+            결과 {total}건
+          </button>
+        )}
+      </div>
+
       <footer className="foot">
         <b>로컬 AI 코드리뷰</b> · 처리는 모두 이 브라우저에서 합니다 · 모델: Qwen2.5-Coder (Apache-2.0) · 실행: transformers.js / ONNX Runtime Web ·{' '}
         <a href="https://github.com/currentJob/local-code-review" target="_blank" rel="noreferrer">소스</a>

@@ -78,8 +78,21 @@ details pre { white-space: pre-wrap; color: var(--cj-muted); }
 .foot { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--cj-line); font-size: 12px; color: var(--cj-muted); }
 .foot b { color: var(--cj-ink); font-family: var(--cj-serif); font-weight: 600; }
 
+/* 모바일 전용 하단 실행 바 */
+.mobile-actions { display: none; }
+
 @media (max-width: 820px) {
-  .app { padding: 28px 16px 40px; }
+  .app { padding: 28px 16px calc(96px + env(safe-area-inset-bottom, 0px)); }
+  .mobile-actions { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex; gap: 8px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); background: color-mix(in srgb, var(--cj-surface) 94%, transparent); border-top: 1px solid var(--cj-line); box-shadow: 0 -8px 24px color-mix(in srgb, var(--cj-ink) 10%, transparent); backdrop-filter: blur(10px); }
+  .mobile-actions button:first-child { flex: 1; justify-content: center; min-height: 48px; }
+  .mobile-actions button.secondary { flex: none; min-height: 48px; }
+  .hero h1 { font-size: 2rem; }
+  .hero p { font-size: 15px; }
+  .howto { font-size: 12px; }
+  .files li { padding: 11px 0; }
+  .files input { width: 20px; height: 20px; }
+  .findings li { padding: 12px; }
+  .msg { flex-basis: 100%; }
   .layout { grid-template-columns: 1fr; }
   textarea { min-height: 200px; }
   .panel { padding: 18px; }
