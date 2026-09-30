@@ -4,6 +4,7 @@ import { buildMessages, parseFindings, reviewableLines, severityLabel, toMarkdow
 import { MODELS, type Backend, type FromWorker, type ModelId } from './lib/protocol'
 import { SAMPLE_DIFF } from './lib/sample'
 import { Icon, type IconName } from './icons'
+import { ThemeControls } from './ThemeControls'
 
 type ModelState =
   | { kind: 'idle' }
@@ -368,6 +369,7 @@ function AppHeader({ resultCount }: { resultCount: number | null }) {
         ))}
       </nav>
       <div className="cj-header-actions">
+        <ThemeControls />
         <a className="cj-pill" href="https://github.com/currentJob/local-code-review" target="_blank" rel="noreferrer" aria-label="소스 코드 (GitHub)">
           <Icon name="github" /><span className="cj-label">소스</span>
         </a>
